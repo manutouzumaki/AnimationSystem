@@ -35,17 +35,8 @@ void main()
         totalPosition += localPosition * Weights[i];
     }
 
-    /*
-    mat4 boneTransform =  gBones[BoneIDs[0]] * Weights[0];
-         boneTransform += gBones[BoneIDs[1]] * Weights[1];
-         boneTransform += gBones[BoneIDs[2]] * Weights[2];
-         boneTransform += gBones[BoneIDs[3]] * Weights[3];
-
-    vec4 finalPos = boneTransform * vec4(aPos, 1.0f);
-    */
-
     Normal = mat3(transpose(inverse(world))) * aNormal;
     FragPos = vec3(world * vec4(aPos, 1.0f));
     TexCoord = aTexCoord;
-    gl_Position = proj * view * world * totalPosition;
+    gl_Position = proj * view * world * vec4(aPos, 1.0f);
 }
