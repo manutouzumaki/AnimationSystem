@@ -10,7 +10,6 @@ uniform mat4 proj;
 uniform mat4 view;
 uniform mat4 world;
 
-
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 gBones[MAX_BONES];
@@ -21,8 +20,8 @@ out vec2 TexCoord;
 
 void main()
 {
-
     vec4 totalPosition = vec4(0.0f);
+    vec3 totalNormal = vec3(0.0f);
     for(int i = 0; i < MAX_BONE_INFLUENCE; i++)
     {
         if(BoneIDs[i] == -1)
@@ -33,10 +32,12 @@ void main()
         }
         vec4 localPosition = gBones[BoneIDs[i]] * vec4(aPos, 1.0f);
         totalPosition += localPosition * Weights[i];
+        vec3 localNormal = mat3(gBones[BoneIDs[i]]) * aNormal;
+        totalNormal += localNormal * Weights[i];
     }
 
-    Normal = mat3(transpose(inverse(world))) * aNormal;
-    FragPos = vec3(world * vec4(aPos, 1.0f));
+    gl_Position = proj * view * world * totalPosition;
     TexCoord = aTexCoord;
-    gl_Position = proj * view * world * vec4(aPos, 1.0f);
+    Normal = mat3(transpose(inverse(world))) * totalNormal;
+    FragPos = vec3(world * totalPosition);
 }

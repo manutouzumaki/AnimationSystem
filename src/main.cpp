@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     
     Model lightMesh("../assets/test.obj");
 
-#if 1
+#if 0
     Model testModel("../assets/cowboy/model.dae");
     Animation testAnimation("../assets/cowboy/model.dae", &testModel);
     Animator animator(&testAnimation);
@@ -121,15 +121,9 @@ int main(int argc, char *argv[])
     glm::mat4 orthProjMatrix = glm::ortho(-WINDOW_WIDTH*0.5f, WINDOW_WIDTH*0.5f, WINDOW_HEIGHT*0.5f, -WINDOW_HEIGHT*0.5f, 0.1f, 100.0f);
 
 
-#if 1
-    glm::vec3 eye = glm::vec3(2, 3, 8);
+    glm::vec3 eye = glm::vec3(0, 0, 16);
     glm::vec3 target = glm::vec3(0, 0, 0);
     glm::vec3 up = glm::vec3(0, 1, 0);
-#else
-    glm::vec3 eye = glm::vec3(0, 35, 80);
-    glm::vec3 target = glm::vec3(0, 35, 0);
-    glm::vec3 up = glm::vec3(0, 1, 0);
-#endif
     glm::mat4 viewMatrix = glm::lookAt(eye, target, up);
 
     glm::vec3 ambientColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -174,8 +168,6 @@ int main(int argc, char *argv[])
     glUniformMatrix4fv(projLigth, 1, false, &persProjMatrix[0][0]);
     glUniformMatrix4fv(viewLigth, 1, false, &viewMatrix[0][0]);
 
-    bool show_demo_window = true;
-
     b8 running = true;
     u32 lastTime = 0;
     while(running)
@@ -185,7 +177,7 @@ int main(int argc, char *argv[])
         lastTime = currenTime;
 
         local_persist float angle = 0.0f;
-        glm::vec3 lightPosV = glm::vec3(glm::vec3(4.0f*sinf(angle), 2*sinf((angle*8)), 4.0f*cosf(angle)));
+        glm::vec3 lightPosV = glm::vec3(glm::vec3(8.0f*sinf(angle), 2*sinf((angle*8)), 8.0f*cosf(angle)));
         angle += dt;
         
         SDL_Event event;
@@ -233,15 +225,8 @@ int main(int argc, char *argv[])
         glUniform3fv(specularLight, 1, &specularLightColor[0]);
         
         glUseProgram(ligthShaderProgram);
-        glUniform3fv(ligthColor, 1, &ambientLightColor[0]);
-        
-        animator.UpdateAnimation(dt);
-        auto transforms = animator.GetFinalBoneMatrices();
-        for(i32 i = 0; i < transforms.size(); ++i)
-        {
-            glUniformMatrix4fv(gBones, (i32)transforms.size(), false, &transforms[0][0][0]);
-        }
-        
+        glUniform3fv(ligthColor, 1, &specularLightColor[0]);
+                
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
         glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
@@ -258,11 +243,17 @@ int main(int argc, char *argv[])
         glUseProgram(shaderProgram);
         
         glUniform3fv(positionLight, 1, &lightPosV[0]);
+        animator.UpdateAnimation(dt);
+        auto transforms = animator.GetFinalBoneMatrices();
+        for(i32 i = 0; i < transforms.size(); ++i)
+        {
+            glUniformMatrix4fv(gBones, (i32)transforms.size(), false, &transforms[0][0][0]);
+        }
 
         worldMatrix = glm::mat4(1.0f);
-        worldMatrix = glm::translate(worldMatrix, glm::vec3(0.0f, -4.0f, 0.0f));
-        worldMatrix = glm::rotate(worldMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        worldMatrix = glm::scale(worldMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
+        worldMatrix = glm::translate(worldMatrix, glm::vec3(0.0f, -6.0f, 0.0f));
+        worldMatrix = glm::rotate(worldMatrix, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        worldMatrix = glm::scale(worldMatrix, glm::vec3(0.2f, 0.2f, 0.2f));
         glUniformMatrix4fv(world, 1, false, &worldMatrix[0][0]);
         testModel.Draw(shaderProgram);
 
