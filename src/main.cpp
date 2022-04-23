@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glEnable(GL_DEPTH_TEST); 
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
     
     Model lightMesh("../assets/test.obj");
 
@@ -99,7 +99,8 @@ int main(int argc, char *argv[])
     Animation testAnimation("../assets/cowboy/model.dae", &testModel);
     Animator animator(&testAnimation);
 #else
-    Model testModel("../assets/model/boblampclean.md5mesh");
+    Model testModel("../assets/backpack/backpack.obj");
+    //Model testModel("../assets/model/boblampclean.md5mesh");
     Animation testAnimation("../assets/model/boblampclean.md5mesh", &testModel);
     Animator animator(&testAnimation);
 #endif
@@ -121,7 +122,7 @@ int main(int argc, char *argv[])
     glm::mat4 orthProjMatrix = glm::ortho(-WINDOW_WIDTH*0.5f, WINDOW_WIDTH*0.5f, WINDOW_HEIGHT*0.5f, -WINDOW_HEIGHT*0.5f, 0.1f, 100.0f);
 
 
-    glm::vec3 eye = glm::vec3(0, 0, 16);
+    glm::vec3 eye = glm::vec3(2, 2, 4);
     glm::vec3 target = glm::vec3(0, 0, 0);
     glm::vec3 up = glm::vec3(0, 1, 0);
     glm::mat4 viewMatrix = glm::lookAt(eye, target, up);
@@ -178,7 +179,7 @@ int main(int argc, char *argv[])
 
         local_persist float angle = 0.0f;
         glm::vec3 lightPosV = glm::vec3(glm::vec3(8.0f*sinf(angle), 2*sinf((angle*8)), 8.0f*cosf(angle)));
-        angle += dt;
+        angle += dt*0.5f;
         
         SDL_Event event;
         while(SDL_PollEvent(&event))
@@ -201,7 +202,7 @@ int main(int argc, char *argv[])
         ImGui::ColorEdit3("diffuse", (f32 *)&diffuseColor);
         ImGui::ColorEdit3("specular", (f32 *)&specularColor);
         if(ImGui::Button("-"))
-            shininessColor  /= 2;
+            shininessColor /= 2;
         ImGui::SameLine();
         if(ImGui::Button("+"))
             shininessColor *= 2;
@@ -251,9 +252,9 @@ int main(int argc, char *argv[])
         }
 
         worldMatrix = glm::mat4(1.0f);
-        worldMatrix = glm::translate(worldMatrix, glm::vec3(0.0f, -6.0f, 0.0f));
-        worldMatrix = glm::rotate(worldMatrix, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        worldMatrix = glm::scale(worldMatrix, glm::vec3(0.2f, 0.2f, 0.2f));
+        worldMatrix = glm::translate(worldMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+        worldMatrix = glm::rotate(worldMatrix, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        worldMatrix = glm::scale(worldMatrix, glm::vec3(0.8f, 0.8f, 0.8f));
         glUniformMatrix4fv(world, 1, false, &worldMatrix[0][0]);
         testModel.Draw(shaderProgram);
 

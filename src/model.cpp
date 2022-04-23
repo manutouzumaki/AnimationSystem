@@ -228,6 +228,8 @@ private:
             
             vertex.position = GetGLMVec(mesh->mVertices[i]);
             vertex.normal = GetGLMVec(mesh->mNormals[i]);
+            vertex.tangent = GetGLMVec(mesh->mTangents[i]);
+            vertex.bitangent = GetGLMVec(mesh->mBitangents[i]);
 
             if(mesh->mTextureCoords[0])
             {
